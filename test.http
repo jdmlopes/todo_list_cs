@@ -1,0 +1,25 @@
+@hostname = http://localhost:5059
+### get /todos
+GET {{hostname}}/todos
+### get /todos/{id}
+GET {{hostname}}/todos/1
+### post /todos
+POST {{hostname}}/todos
+Content-Type: application/json
+
+{
+    "title": "Eat oranges",
+    "description": "beware of the scurvy",
+    "completed": false
+}
+### put /todos/{id}
+PUT {{hostname}}/todos/1
+Content-Type: application/json
+
+{
+    "title": "Done Groceries",
+    "description": "bought everything =).",
+    "completed": true
+}
+### delete /todos/{id}
+DELETE {{hostname}}/todos/1

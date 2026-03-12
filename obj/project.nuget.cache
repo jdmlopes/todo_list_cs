@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Y+c/g4SfxkY=",
+  "success": true,
+  "projectFilePath": "C:\\Workspace\\repo\\todo_list_cs\\todo_list_cs.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\jdlop\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.0\\microsoft.aspnetcore.openapi.10.0.0.nupkg.sha512",
+    "C:\\Users\\jdlop\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
