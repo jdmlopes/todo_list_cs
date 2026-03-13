@@ -2,22 +2,22 @@
 ### get /todos
 GET {{hostname}}/todos
 ### get /todos/{id}
-GET {{hostname}}/todos/1
+GET {{hostname}}/todos/5
 ### post /todos
 POST {{hostname}}/todos
 Content-Type: application/json
 
 {
-    "title": "Eat oranges",
-    "description": "beware of the scurvy",
+    "title": "Study mah dude",
+    "description": "fake description",
     "completed": false
 }
 ### put /todos/{id}
-PUT {{hostname}}/todos/1
+PUT {{hostname}}/todos/2
 Content-Type: application/json
 
 {
-    "title": "Done Groceries",
+    "title": "Done Groceries =D",
     "description": "bought everything =).",
     "completed": true
 }

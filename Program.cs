@@ -1,7 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using TodoApi.Data;
+using TodoApi.Models;
+using TodoApi.Repositories;
+using TodoApi.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
-
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+DbInitializer.Initialize(connectionString);
+builder.Services.AddSingleton<TodoRepository>(
+    new TodoRepository(connectionString)
+);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -16,71 +24,45 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-List<Todo> todoList = new()
-    {
-        new Todo{Id = 1, Title = "Do Groceries", Description = "1. 2kg potatos\n2. 1kg Onions\n3. Pasta", Completed = false},
-        new Todo{Id = 2, Title = "Walk the dog", Description = "Toto needs his afternoon walk", Completed = false},
-        new Todo{Id = 3, Title = "Morning jog", Description = "Jog in the park for at least 30 mins", Completed = true }
-    };
-int maxId = todoList.Count == 0 ? 0 : todoList.Max(t => t.Id);
-
-app.MapGet("/todos", () =>
+app.MapGet("/todos", (TodoRepository repo) =>
 {
-    return Results.Ok(todoList);
+    return Results.Ok(repo.GetAll());
 });
 
-app.MapGet("/todos/{id}", (int id) =>
+app.MapGet("/todos/{id}", (int id, TodoRepository repo) =>
 {
-    Todo? todo = todoList.Find(t => t.Id == id);
-    if (todo == null)
-    {
-        return Results.NotFound();
-    }
-    return Results.Ok(todo);
+    Todo? todo = repo.GetById(id);
+    return todo is null ? Results.NotFound() : Results.Ok(todo);
+
 });
 
-app.MapPost("/todos", (Todo newTodo) =>
+app.MapPost("/todos", (Todo newTodo, TodoRepository repo) =>
 {
-    ValidationContext validationContext = new ValidationContext(newTodo);
-    List<ValidationResult> errors = new();
-    if (!Validator.TryValidateObject(newTodo,validationContext,errors,true))
-    {
+    var errors = ValidationHelper.Validate(newTodo);
+    if (errors != null)
         return Results.BadRequest(errors);
-    }
-    maxId++;
-    newTodo.Id = maxId;
-    todoList.Add(newTodo);
+
+    repo.Create(newTodo);
     return Results.Created($"/todos/{newTodo.Id}", newTodo);
 });
 
-app.MapPut("/todos/{id}", (int id, Todo updatedTodo) =>
+app.MapPut("/todos/{id}", (int id, Todo updatedTodo, TodoRepository repo) =>
 {
-    ValidationContext validationContext = new ValidationContext(updatedTodo);
-    List<ValidationResult> errors = new();
-    if (!Validator.TryValidateObject(updatedTodo,validationContext,errors,true))
-    {
+    var errors = ValidationHelper.Validate(updatedTodo);
+    if (errors != null)
         return Results.BadRequest(errors);
-    }
-    Todo? todo = todoList.Find(t => t.Id == id);
-    if (todo is null)
-    {
-        return Results.NotFound();
-    }
-    todo.Title = updatedTodo.Title;
-    todo.Description = updatedTodo.Description;
-    todo.Completed = updatedTodo.Completed;
-    return Results.Ok(todo);
+    Todo? todo = repo.Update(id, updatedTodo);
+    return todo is null ? Results.NotFound() : Results.Ok(todo);
+
 });
 
-app.MapDelete("/todos/{id}", (int id) =>
+app.MapDelete("/todos/{id}", (int id, TodoRepository repo) =>
 {
-    Todo? todo = todoList.Find(t => t.Id == id);
-    if (todo is null)
+    if (repo.Delete(id))
     {
-        return Results.NotFound();
+        return Results.NoContent();
     }
-    todoList.Remove(todo);
-    return Results.NoContent();
+    return Results.NotFound();
 });
 
 app.Run();
