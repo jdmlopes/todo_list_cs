@@ -81,7 +81,7 @@ public class TodoRepository
             command.Parameters.AddWithValue("$description", todo.Description);
             command.Parameters.AddWithValue("$completed", todo.Completed);
             var id = command.ExecuteScalar();
-            todo.Id = (int)(long)id;
+            todo.Id = (int)(long)id!;
             return todo.Id;
         }
     }

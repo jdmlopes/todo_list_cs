@@ -2,7 +2,7 @@
 ### get /todos
 GET {{hostname}}/todos
 ### get /todos/{id}
-GET {{hostname}}/todos/5
+GET {{hostname}}/todos/9
 ### post /todos
 POST {{hostname}}/todos
 Content-Type: application/json
@@ -13,7 +13,7 @@ Content-Type: application/json
     "completed": false
 }
 ### put /todos/{id}
-PUT {{hostname}}/todos/2
+PUT {{hostname}}/todos/16
 Content-Type: application/json
 
 {
@@ -22,4 +22,20 @@ Content-Type: application/json
     "completed": true
 }
 ### delete /todos/{id}
-DELETE {{hostname}}/todos/1
+DELETE {{hostname}}/todos/16
+### post /register
+POST {{hostname}}/register
+Content-Type: application/json
+
+{
+    "username": "chucktesta",
+    "password": "123456"
+}
+### post /login
+POST {{hostname}}/login
+Content-Type: application/json
+
+{
+    "username": "chucktesta",
+    "password": "123456"
+}
