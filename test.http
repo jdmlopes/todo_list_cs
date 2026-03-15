@@ -1,41 +1,87 @@
 @hostname = http://localhost:5059
-### get /todos
-GET {{hostname}}/todos
-### get /todos/{id}
-GET {{hostname}}/todos/9
-### post /todos
-POST {{hostname}}/todos
-Content-Type: application/json
-
-{
-    "title": "Study mah dude",
-    "description": "fake description",
-    "completed": false
-}
-### put /todos/{id}
-PUT {{hostname}}/todos/16
-Content-Type: application/json
-
-{
-    "title": "Done Groceries =D",
-    "description": "bought everything =).",
-    "completed": true
-}
-### delete /todos/{id}
-DELETE {{hostname}}/todos/16
-### post /register
+@token = {{login.response.body.$.token}}
+### post /register => user 1
 POST {{hostname}}/register
 Content-Type: application/json
 
 {
-    "username": "chucktesta",
+    "name": "Chuck Testa",
+    "email": "chuck@testa.com",
     "password": "123456"
 }
-### post /login
+### post /register => user 2
+POST {{hostname}}/register
+Content-Type: application/json
+
+{
+    "name": "Fulano de Tal",
+    "email": "fulano@detal.com",
+    "password": "654321"
+}
+### post /login => user 1
+# @name login
 POST {{hostname}}/login
 Content-Type: application/json
 
 {
-    "username": "chucktesta",
+    "email": "chuck@testa.com",
     "password": "123456"
 }
+### post /login => user 2
+# @name login
+POST {{hostname}}/login
+Content-Type: application/json
+
+{
+    "email": "fulano@detal.com",
+    "password": "654321"
+}
+### get /todos
+GET {{hostname}}/todos
+Authorization: Bearer {{token}}
+### get /todos with pagination
+GET {{hostname}}/todos?limit=2&page=1&
+Authorization: Bearer {{token}}
+### get /todos with filters
+GET {{hostname}}/todos?completed=true
+Authorization: Bearer {{token}}
+### get /todos ordered
+GET {{hostname}}/todos?orderby=title&direction=desc
+Authorization: Bearer {{token}}
+### get /todos/{id}
+GET {{hostname}}/todos/6
+Authorization: Bearer {{token}}
+### post /todos
+POST {{hostname}}/todos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Boom, Chuck Testa",
+    "description": "fake description 1",
+    "completed": false
+}
+### post /todos
+POST {{hostname}}/todos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "This is a test",
+    "description": "fake description 1",
+    "completed": false
+}
+### put /todos/{id}
+PUT {{hostname}}/todos/5
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Zero Problemas",
+    "description": "isso mesmo.",
+    "completed": true
+}
+### delete /todos/{id}
+DELETE {{hostname}}/todos/7
+Authorization: Bearer {{token}}
+

@@ -10,6 +10,7 @@ namespace TodoApi.Models
         [Required]
         public string Description { get; set; }
         public bool Completed { get; set; }
+        public string UserEmail { get; set; }
 
     }
 }

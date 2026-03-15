@@ -12,8 +12,8 @@ public static class DbInitializer
             var command = connection.CreateCommand();
             command.CommandText = @"
                 CREATE TABLE IF NOT EXISTS Users (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Username TEXT NOT NULL UNIQUE,
+                    Name TEXT NOT NULL,
+                    Email TEXT PRIMARY KEY,
                     PasswordHash TEXT NOT NULL
                 );
 
@@ -21,7 +21,8 @@ public static class DbInitializer
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Title TEXT NOT NULL,
                     Description TEXT NOT NULL,
-                    Completed INTEGER NOT NULL
+                    Completed INTEGER NOT NULL,
+                    UserEmail TEXT NOT NULL
                 );
 
                 

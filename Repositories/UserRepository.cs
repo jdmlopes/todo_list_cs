@@ -12,18 +12,18 @@ public class UserRepository
         this.connectionString = connectionString;
     }
 
-    public User? GetByUsername(string username)
+    public User? GetByEmail(string email)
     {
         using (var connection = new SqliteConnection(connectionString))
         {
             connection.Open();
             var command = connection.CreateCommand();
             command.CommandText = @"
-                SELECT Id, Username, PasswordHash
+                SELECT Name, Email, PasswordHash
                 FROM Users
-                WHERE Username = $username;
+                WHERE Email = $email;
             ";
-            command.Parameters.AddWithValue("$username", username);
+            command.Parameters.AddWithValue("$email", email);
 
             using var reader = command.ExecuteReader();
 
@@ -32,29 +32,28 @@ public class UserRepository
 
             return new User
             {
-                Id = reader.GetInt32(0),
-                Username = reader.GetString(1),
+                Name = reader.GetString(0),
+                Email = reader.GetString(1),
                 PasswordHash = reader.GetString(2)
             };
         }
     }
 
-    public int Create(User user)
+    public string Create(User user)
     {
         using (var connection = new SqliteConnection(connectionString))
         {
             connection.Open();
             var command = connection.CreateCommand();
             command.CommandText = @"
-                INSERT INTO Users (Username,PasswordHash) 
-                VALUES($username,$passwordhash);
-                SELECT last_insert_rowid();
+                INSERT INTO Users (Name, Email, PasswordHash) 
+                VALUES($name, $email, $passwordhash);
             ";
-            command.Parameters.AddWithValue("$username", user.Username);
+            command.Parameters.AddWithValue("$name", user.Name);
+            command.Parameters.AddWithValue("$email", user.Email);
             command.Parameters.AddWithValue("$passwordhash", user.PasswordHash);
-            var id = command.ExecuteScalar();
-            user.Id = (int)(long)id!;
-            return user.Id;
+            command.ExecuteNonQuery();
+            return user.Email;
         }
     }
 }
