@@ -18,6 +18,17 @@ builder.Services.AddSingleton<TodoRepository>(
     new TodoRepository(connectionString)
 );
 builder.Services.AddSingleton<JwtService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -50,6 +61,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -100,23 +114,23 @@ app.MapGet("/todos", [Authorize] (
     string direction = "asc") =>
 {
     var email = context.User.Identity!.Name!;
-    var todos = repo.GetByUser(email,page,limit, completed,orderBy,direction);
-    var total = repo.CountByUser(email,completed);
+    var todos = repo.GetByUser(email, page, limit, completed, orderBy, direction);
+    var total = repo.CountByUser(email, completed);
 
     return Results.Ok(new
-        {
-            data = todos,
-            page,
-            limit,
-            total
-        }
+    {
+        data = todos,
+        page,
+        limit,
+        total
+    }
     );
 });
 
 app.MapGet("/todos/{id}", [Authorize] (int id, TodoRepository repo, HttpContext context) =>
 {
     var email = context.User.Identity!.Name!;
-    Todo? todo = repo.GetById(id,email);
+    Todo? todo = repo.GetById(id, email);
     return todo is null ? Results.NotFound() : Results.Ok(todo);
 
 });
@@ -146,7 +160,7 @@ app.MapPut("/todos/{id}", [Authorize] (int id, Todo updatedTodo, TodoRepository 
 app.MapDelete("/todos/{id}", [Authorize] (int id, TodoRepository repo, HttpContext context) =>
 {
     var email = context.User.Identity!.Name!;
-    if (repo.Delete(id,email))
+    if (repo.Delete(id, email))
     {
         return Results.NoContent();
     }
