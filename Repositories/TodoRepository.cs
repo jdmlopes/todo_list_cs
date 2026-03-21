@@ -73,7 +73,7 @@ public class TodoRepository
             if (!string.IsNullOrEmpty(orderBy) &&  sortableColumns.TryGetValue(orderBy.ToLower(), out var column))
             {
                 direction = direction.ToLower() == "desc" ? "DESC" : "ASC";
-                query += $" ORDER BY {column} {direction}";
+                query += $" ORDER BY {column} COLLATE NOCASE {direction}";
             }
             else
             {
