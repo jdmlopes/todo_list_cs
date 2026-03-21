@@ -13,31 +13,6 @@ public class TodoRepository
         this.connectionString = connectionString;
     }
 
-    // public List<Todo> GetAll()
-    // {
-    //     using (var connection = new SqliteConnection(connectionString))
-    //     {
-    //         connection.Open();
-    //         var command = connection.CreateCommand();
-    //         command.CommandText = @"
-    //             SELECT Id, Title, Description, Completed FROM Todos
-    //         ";
-    //         using var reader = command.ExecuteReader();
-    //         List<Todo> todos = new();
-    //         while (reader.Read())
-    //         {
-    //             Todo todo = new Todo
-    //             {
-    //                 Id = reader.GetInt32(0),
-    //                 Title = reader.GetString(1),
-    //                 Description = reader.GetString(2),
-    //                 Completed = reader.GetInt32(3) == 1
-    //             };
-    //             todos.Add(todo);
-    //         }
-    //         return todos;
-    //     }
-    // }
     public List<Todo> GetByUser(string email,
         int page,
         int limit,

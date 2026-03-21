@@ -101,7 +101,7 @@ app.MapPost("/login", (RegisterRequest request, UserRepository users, JwtService
         return Results.Unauthorized();
     string token = jwt.GenerateToken(user);
 
-    return Results.Ok(new { token });
+    return Results.Ok(new { token = token,name =  user.Name });
 });
 
 app.MapGet("/todos", [Authorize] (

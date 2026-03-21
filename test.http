@@ -37,7 +37,7 @@ Content-Type: application/json
     "password": "654321"
 }
 ### get /todos
-GET {{hostname}}/todos
+GET {{hostname}}/todos?orderby=title&direction=desc
 Authorization: Bearer {{token}}
 ### get /todos with pagination
 GET {{hostname}}/todos?limit=2&page=1&
